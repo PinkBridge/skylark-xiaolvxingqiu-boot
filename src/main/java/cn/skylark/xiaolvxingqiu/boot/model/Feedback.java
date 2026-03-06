@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class Feedback {
     private Long id;
+    private Long userId;
 
     @NotBlank(message = "feedback content cannot be empty")
     private String content;

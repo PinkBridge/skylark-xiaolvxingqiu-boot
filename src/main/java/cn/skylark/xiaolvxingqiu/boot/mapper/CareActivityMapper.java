@@ -146,4 +146,9 @@ public interface CareActivityMapper {
                                                                                                      @Param("plantId") Long plantId,
                                                                                                      @Param("startDate") LocalDate startDate,
                                                                                                      @Param("endDate") LocalDate endDate);
+
+    @Select("SELECT user_id,COUNT(1) AS completed_count FROM care_activity " +
+            "WHERE deleted=0 AND status='COMPLETED' AND DATE(completed_at)=#{date} " +
+            "GROUP BY user_id")
+    List<cn.skylark.xiaolvxingqiu.boot.model.UserDailyCompletedCount> countCompletedByUserOnDate(@Param("date") LocalDate date);
 }

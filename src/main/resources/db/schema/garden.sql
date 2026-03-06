@@ -113,3 +113,39 @@ CREATE TABLE IF NOT EXISTS `care_activity` (
   KEY `idx_activity_user_plant_date` (`user_id`, `plant_id`, `scheduled_date`),
   KEY `idx_activity_rule_date` (`rule_id`, `scheduled_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `feedback` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `content` VARCHAR(500) NOT NULL,
+  `contact` VARCHAR(100) DEFAULT NULL,
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_feedback_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `user_coin_account` (
+  `user_id` BIGINT NOT NULL,
+  `coin_balance` BIGINT NOT NULL DEFAULT 0,
+  `completed_activity_total` BIGINT NOT NULL DEFAULT 0,
+  `progress_activity_count` INT NOT NULL DEFAULT 0,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `user_coin_txn` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `change_amount` BIGINT NOT NULL DEFAULT 0,
+  `reason` VARCHAR(64) NOT NULL,
+  `related_date` DATE NOT NULL,
+  `meta_json` JSON DEFAULT NULL,
+  `created_at` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_coin_txn_user_reason_date` (`user_id`, `reason`, `related_date`),
+  KEY `idx_coin_txn_user_id` (`user_id`),
+  KEY `idx_coin_txn_date` (`related_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
