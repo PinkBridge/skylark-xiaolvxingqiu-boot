@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class UserProfile {
 
+    private Long userId;
     private String avatar;
 
     @NotBlank(message = "user name cannot be empty")
@@ -15,4 +16,5 @@ public class UserProfile {
     private String gender;
     private String birthday;
     private String motto;
+    private String phone;
 }

@@ -1,12 +1,14 @@
 package cn.skylark.xiaolvxingqiu.boot.controller;
 
 import cn.skylark.xiaolvxingqiu.boot.common.ApiResponse;
+import cn.skylark.xiaolvxingqiu.boot.config.UserContextProvider;
 import cn.skylark.xiaolvxingqiu.boot.model.UserProfile;
-import cn.skylark.xiaolvxingqiu.boot.service.AppDataService;
+import cn.skylark.xiaolvxingqiu.boot.service.UserProfileService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,20 +16,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/profile")
 public class ProfileController {
 
-    private final AppDataService appDataService;
+    private final UserProfileService userProfileService;
+    private final UserContextProvider userContextProvider;
 
-    public ProfileController(AppDataService appDataService) {
-        this.appDataService = appDataService;
+    public ProfileController(UserProfileService userProfileService, UserContextProvider userContextProvider) {
+        this.userProfileService = userProfileService;
+        this.userContextProvider = userContextProvider;
     }
 
     @GetMapping
-    public ApiResponse<UserProfile> getProfile() {
-        return ApiResponse.success(appDataService.getUserProfile());
+    public ApiResponse<UserProfile> getProfile(@RequestHeader(value = "X-User-Id", required = false) Long headerUserId) {
+        Long userId = userContextProvider.resolveUserId(headerUserId);
+        return ApiResponse.success(userProfileService.getOrDefault(userId));
     }
 
     @PutMapping
-    public ApiResponse<Void> updateProfile(@Validated @RequestBody UserProfile userProfile) {
-        appDataService.updateUserProfile(userProfile);
+    public ApiResponse<Void> updateProfile(@RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+                                           @Validated @RequestBody UserProfile userProfile) {
+        Long userId = userContextProvider.resolveUserId(headerUserId);
+        userProfileService.updateProfile(userId, userProfile);
         return ApiResponse.success();
     }
 }

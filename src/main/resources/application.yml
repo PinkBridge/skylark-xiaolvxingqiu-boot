@@ -19,5 +19,8 @@ app:
   auth:
     use-mock-user: true
     mock-user-id: 10001
+  wechat:
+    app-id: "wx2cb9ad28ce687200"
+    app-secret: "2951d2edfab1a4875397798da58b6f65"
   care:
     generate-cron: "0 10 0 * * ?"

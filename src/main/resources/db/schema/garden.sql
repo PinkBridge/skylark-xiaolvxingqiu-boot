@@ -126,6 +126,19 @@ CREATE TABLE IF NOT EXISTS `feedback` (
   KEY `idx_feedback_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `user_profile` (
+  `user_id` BIGINT NOT NULL,
+  `avatar` VARCHAR(512) DEFAULT NULL,
+  `name` VARCHAR(64) NOT NULL,
+  `gender` VARCHAR(16) DEFAULT NULL,
+  `birthday` VARCHAR(20) DEFAULT NULL,
+  `motto` VARCHAR(200) DEFAULT NULL,
+  `phone` VARCHAR(32) DEFAULT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `user_coin_account` (
   `user_id` BIGINT NOT NULL,
   `coin_balance` BIGINT NOT NULL DEFAULT 0,
