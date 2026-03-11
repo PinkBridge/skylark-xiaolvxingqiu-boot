@@ -139,6 +139,19 @@ CREATE TABLE IF NOT EXISTS `user_profile` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `user_wechat_identity` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `openid` VARCHAR(128) NOT NULL,
+  `unionid` VARCHAR(128) DEFAULT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_wechat_openid` (`openid`),
+  UNIQUE KEY `uk_wechat_user_id` (`user_id`),
+  KEY `idx_wechat_unionid` (`unionid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `user_coin_account` (
   `user_id` BIGINT NOT NULL,
   `coin_balance` BIGINT NOT NULL DEFAULT 0,
@@ -161,4 +174,21 @@ CREATE TABLE IF NOT EXISTS `user_coin_txn` (
   UNIQUE KEY `uk_coin_txn_user_reason_date` (`user_id`, `reason`, `related_date`),
   KEY `idx_coin_txn_user_id` (`user_id`),
   KEY `idx_coin_txn_date` (`related_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `ai_plant_collection` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `name` VARCHAR(128) NOT NULL,
+  `description` VARCHAR(2000) DEFAULT NULL,
+  `image_url` VARCHAR(512) DEFAULT NULL,
+  `recognized_image_url` VARCHAR(512) DEFAULT NULL,
+  `score` DECIMAL(10,6) DEFAULT NULL,
+  `source` VARCHAR(32) DEFAULT NULL,
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_collection_user_created` (`user_id`, `created_at`),
+  KEY `idx_collection_user_deleted` (`user_id`, `deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
