@@ -61,10 +61,15 @@ public class PlantService {
     }
 
     public Plant createPlant(Long userId, Plant plant) {
-        // Currently attach newly created plants to user's default garden
-        Long defaultGardenId = gardenService.getDefaultGarden(userId).getId();
+        Long gardenId = plant.getGardenId();
+        if (gardenId != null) {
+            // Ensure caller can only create plants under own garden.
+            gardenService.getById(userId, gardenId);
+        } else {
+            gardenId = gardenService.getDefaultGarden(userId).getId();
+        }
         plant.setUserId(userId);
-        plant.setGardenId(defaultGardenId);
+        plant.setGardenId(gardenId);
         if (plant.getHealthStatus() == null || plant.getHealthStatus().trim().isEmpty()) {
             plant.setHealthStatus("healthy");
         }

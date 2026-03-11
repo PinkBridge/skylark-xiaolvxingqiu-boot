@@ -4,6 +4,8 @@ import cn.skylark.xiaolvxingqiu.boot.common.ApiResponse;
 import cn.skylark.xiaolvxingqiu.boot.config.UserContextProvider;
 import cn.skylark.xiaolvxingqiu.boot.model.WechatPhoneAuthRequest;
 import cn.skylark.xiaolvxingqiu.boot.model.WechatPhoneAuthResponse;
+import cn.skylark.xiaolvxingqiu.boot.model.WechatSilentLoginRequest;
+import cn.skylark.xiaolvxingqiu.boot.model.WechatSilentLoginResponse;
 import cn.skylark.xiaolvxingqiu.boot.service.WechatMiniAuthService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,5 +31,10 @@ public class AuthController {
                                                                 @Validated @RequestBody WechatPhoneAuthRequest request) {
         Long userId = userContextProvider.resolveUserId(headerUserId);
         return ApiResponse.success(wechatMiniAuthService.authPhoneAndSaveProfile(userId, request));
+    }
+
+    @PostMapping("/wechat/silent-login")
+    public ApiResponse<WechatSilentLoginResponse> silentLogin(@Validated @RequestBody WechatSilentLoginRequest request) {
+        return ApiResponse.success(wechatMiniAuthService.silentLogin(request.getCode()));
     }
 }
