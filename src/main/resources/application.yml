@@ -11,16 +11,38 @@ spring:
     username: dev
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 12MB
+      max-request-size: 12MB
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
 app:
   auth:
-    use-mock-user: true
+    use-mock-user: false
     mock-user-id: 10001
   wechat:
     app-id: "wx2cb9ad28ce687200"
     app-secret: "2951d2edfab1a4875397798da58b6f65"
+    subscribe:
+      template-id: "G2TSyoIKGkTz85tnSVpfEXDu6wigvwuxBbt_Cr0B-_g"
+  baidu:
+    ai:
+      api-key: "98yUCf17ODFzRZOuCWdYUJII"
+      secret-key: "GOrhNRgdusgHC7EENerf7xH0upG0bnKK"
   care:
     generate-cron: "0 10 0 * * ?"
+  notify:
+    dispatch-cron: "0 * * * * ?"
+  cos:
+    bucket: "xiaolvxingqiu-1256079722"
+    region: "ap-guangzhou"
+    secret-id: "${COS_SECRET_ID:}"
+    secret-key: "${COS_SECRET_KEY:}"
+    public-domain: "xiaolvxingqiu-1256079722.cos.ap-guangzhou.myqcloud.com"
+    base-path: "uploads"
+    max-image-size-mb: 10
+    private-read: false
+    sign-expire-seconds: 86400

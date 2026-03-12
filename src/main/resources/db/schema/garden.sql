@@ -192,3 +192,23 @@ CREATE TABLE IF NOT EXISTS `ai_plant_collection` (
   KEY `idx_collection_user_created` (`user_id`, `created_at`),
   KEY `idx_collection_user_deleted` (`user_id`, `deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `user_subscribe_setting` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `enabled` TINYINT(1) NOT NULL DEFAULT 0,
+  `push_time` VARCHAR(5) NOT NULL DEFAULT '09:00',
+  `template_id` VARCHAR(128) DEFAULT NULL,
+  `auth_status` VARCHAR(16) DEFAULT 'UNKNOWN',
+  `last_auth_at` DATETIME DEFAULT NULL,
+  `last_push_date` DATE DEFAULT NULL,
+  `last_push_status` VARCHAR(16) DEFAULT NULL,
+  `last_push_result` VARCHAR(255) DEFAULT NULL,
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_subscribe_setting_user` (`user_id`),
+  KEY `idx_subscribe_setting_enabled_time` (`enabled`, `push_time`),
+  KEY `idx_subscribe_setting_last_push_date` (`last_push_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

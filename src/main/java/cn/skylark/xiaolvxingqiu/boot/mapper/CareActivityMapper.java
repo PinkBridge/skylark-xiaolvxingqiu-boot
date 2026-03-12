@@ -151,4 +151,32 @@ public interface CareActivityMapper {
             "WHERE deleted=0 AND status='COMPLETED' AND DATE(completed_at)=#{date} " +
             "GROUP BY user_id")
     List<cn.skylark.xiaolvxingqiu.boot.model.UserDailyCompletedCount> countCompletedByUserOnDate(@Param("date") LocalDate date);
+
+    @Select("SELECT COUNT(1) FROM care_activity " +
+            "WHERE user_id=#{userId} AND scheduled_date=#{date} AND status='PENDING' AND deleted=0")
+    long countPendingByUserOnDate(@Param("userId") Long userId, @Param("date") LocalDate date);
+
+    @Select("SELECT COUNT(DISTINCT plant_id) FROM care_activity " +
+            "WHERE user_id=#{userId} AND scheduled_date=#{date} AND status='PENDING' AND deleted=0")
+    long countPendingPlantByUserOnDate(@Param("userId") Long userId, @Param("date") LocalDate date);
+
+    @Select("SELECT activity_type FROM care_activity " +
+            "WHERE user_id=#{userId} AND scheduled_date=#{date} AND status='PENDING' AND deleted=0 " +
+            "GROUP BY activity_type ORDER BY MIN(id) ASC LIMIT #{limit}")
+    List<String> selectPendingTypesByUserOnDate(@Param("userId") Long userId,
+                                                 @Param("date") LocalDate date,
+                                                 @Param("limit") Integer limit);
+
+    @Select("SELECT g.name FROM care_activity a " +
+            "INNER JOIN plant p ON a.plant_id=p.id " +
+            "INNER JOIN garden g ON p.garden_id=g.id " +
+            "WHERE a.user_id=#{userId} AND a.scheduled_date=#{date} AND a.status='PENDING' AND a.deleted=0 " +
+            "ORDER BY a.id ASC LIMIT 1")
+    String selectFirstPendingGardenName(@Param("userId") Long userId, @Param("date") LocalDate date);
+
+    @Select("SELECT p.name FROM care_activity a " +
+            "INNER JOIN plant p ON a.plant_id=p.id " +
+            "WHERE a.user_id=#{userId} AND a.scheduled_date=#{date} AND a.status='PENDING' AND a.deleted=0 " +
+            "ORDER BY a.id ASC LIMIT 1")
+    String selectFirstPendingPlantName(@Param("userId") Long userId, @Param("date") LocalDate date);
 }
