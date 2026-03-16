@@ -32,6 +32,8 @@ app:
     ai:
       api-key: "98yUCf17ODFzRZOuCWdYUJII"
       secret-key: "GOrhNRgdusgHC7EENerf7xH0upG0bnKK"
+      top-num: 2
+      baike-num: 1
   care:
     generate-cron: "0 10 0 * * ?"
   notify:

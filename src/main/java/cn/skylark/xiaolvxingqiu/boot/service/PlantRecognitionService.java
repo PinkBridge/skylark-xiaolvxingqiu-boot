@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class PlantRecognitionService {
 
     private static final long ACCESS_TOKEN_SKEW_MILLIS = TimeUnit.MINUTES.toMillis(5);
-    private static final int DEFAULT_TOP_NUM = 3;
+    private static final int DEFAULT_TOP_NUM = 1;
 
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
@@ -32,6 +32,12 @@ public class PlantRecognitionService {
 
     @Value("${app.baidu.ai.secret-key:}")
     private String secretKey;
+
+    @Value("${app.baidu.ai.top-num:1}")
+    private Integer topNum;
+
+    @Value("${app.baidu.ai.baike-num:0}")
+    private Integer baikeNum;
 
     private volatile String cachedAccessToken = "";
     private volatile long accessTokenExpiresAt = 0L;
@@ -59,8 +65,8 @@ public class PlantRecognitionService {
 
             MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
             formData.add("image", imageBase64);
-            formData.add("top_num", String.valueOf(DEFAULT_TOP_NUM));
-            formData.add("baike_num", "1");
+            formData.add("top_num", String.valueOf(safeTopNum()));
+            formData.add("baike_num", String.valueOf(safeBaikeNum()));
 
             ResponseEntity<String> response = restTemplate.postForEntity(url, new HttpEntity<>(formData, headers), String.class);
             String body = response.getBody();
@@ -142,5 +148,15 @@ public class PlantRecognitionService {
                 throw new IllegalArgumentException("解析百度AI token失败");
             }
         }
+    }
+
+    private int safeTopNum() {
+        if (topNum == null || topNum <= 0) return DEFAULT_TOP_NUM;
+        return Math.min(topNum, 3);
+    }
+
+    private int safeBaikeNum() {
+        if (baikeNum == null) return 0;
+        return baikeNum > 0 ? 1 : 0;
     }
 }
