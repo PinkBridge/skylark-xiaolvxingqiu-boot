@@ -90,6 +90,36 @@ public class CosImageStorageService {
         }
     }
 
+    public UploadResult resolveObjectUrl(String objectKey, boolean preferSigned) {
+        String normalizedKey = trimSlash(objectKey);
+        if (isBlank(normalizedKey)) {
+            throw new IllegalArgumentException("二维码对象 key 未配置");
+        }
+        if (isBlank(bucket) || isBlank(region) || isBlank(secretId) || isBlank(secretKey) || isBlank(publicDomain)) {
+            throw new IllegalArgumentException("COS 配置不完整，请先配置 bucket/region/secret-id/secret-key/public-domain");
+        }
+        COSClient cosClient = null;
+        try {
+            COSCredentials cred = new BasicCOSCredentials(secretId.trim(), secretKey.trim());
+            ClientConfig clientConfig = new ClientConfig(new Region(region.trim()));
+            clientConfig.setHttpProtocol(HttpProtocol.https);
+            cosClient = new COSClient(cred, clientConfig);
+            String publicUrl = buildPublicUrl(normalizedKey);
+            String signedUrl = buildSignedUrl(cosClient, normalizedKey);
+            long expireAtEpochSecond = System.currentTimeMillis() / 1000 + safeSignExpireSeconds();
+            String accessUrl = preferSigned && !isBlank(signedUrl)
+                    ? signedUrl
+                    : (privateRead ? signedUrl : publicUrl);
+            return new UploadResult(accessUrl, normalizedKey, signedUrl, expireAtEpochSecond);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("获取 COS 访问地址失败: " + e.getMessage());
+        } finally {
+            if (cosClient != null) {
+                cosClient.shutdown();
+            }
+        }
+    }
+
     private void validateInput(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("请选择图片文件");
