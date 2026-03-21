@@ -1,2 +1,4 @@
 .idea/
 target/
+# 本机密钥，勿提交
+application-local.yml

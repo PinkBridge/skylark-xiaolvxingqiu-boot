@@ -38,6 +38,8 @@ app:
     generate-cron: "0 10 0 * * ?"
   notify:
     dispatch-cron: "0 * * * * ?"
+  about:
+    group-qr-key: "uploads/system/group-qr.png"
   cos:
     bucket: "xiaolvxingqiu-1256079722"
     region: "ap-guangzhou"
@@ -48,3 +50,15 @@ app:
     max-image-size-mb: 10
     private-read: false
     sign-expire-seconds: 86400
+
+# 通义千问（DashScope OpenAI 兼容），密钥用环境变量 CS_LLM_API_KEY
+cs:
+  llm:
+    enabled: true
+    base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    api-key: ${CS_LLM_API_KEY:}
+    # 控制台模型名以百炼为准；常见为 qwen-plus / qwen3.5-plus 等
+    model: qwen3.5-plus
+    connect-timeout-ms: 15000
+    read-timeout-ms: 120000
+    max-tokens: 512
